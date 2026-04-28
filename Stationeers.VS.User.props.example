@@ -1,0 +1,11 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<!-- Parent folder of the Stationeers game install. Edit for your machine. -->
+		<SteamLibraryDirectory>G:\SteamLibrary\steamapps\common</SteamLibraryDirectory>
+		<!-- Optional: explicit path wins over any auto discovery (Documents mods, then Steam Workshop). -->
+		<!-- <StationeersLuaAssemblyPath>C:\path\to\StationeersLua.dll</StationeersLuaAssemblyPath> -->
+		<!-- Rare: different game app id or forked workshop id (default 544550 / 3659911735). -->
+		<!-- <StationeersSteamAppId>544550</StationeersSteamAppId> -->
+		<!-- <StationeersLuaWorkshopId>3659911735</StationeersLuaWorkshopId> -->
+	</PropertyGroup>
+</Project>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>StationeersLua Addon Template [StationeersLaunchPad]</Name>
+	<Author>zedle</Author>
+	<Version>0.1.0.0</Version>
+	<Description>
+[h1]StationeersLua Addon Template[/h1]
+[i]Open-source sample LaunchPad mod:[/i] registers extra Lua VM bindings through [b]StationeersLua[/b]’s public [code]LuaLibraryRegistry[/code] API (same extension point as ScriptedScreens). Fork this project to ship your own [code]ic.*[/code] or global Lua helpers in C#.
+
+[h2]Requirements[/h2]
+[list]
+[*] [url=https://github.com/BepInEx/BepInEx]BepInEx 5.x[/url]
+[*] [url=https://github.com/StationeersLaunchPad/StationeersLaunchPad]StationeersLaunchPad[/url]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3659911735]StationeersLua[/url] — [b]required[/b]; load before this mod
+[/list]
+
+[h2]Sample Lua[/h2]
+After load, chips can call [code]ic.addon_template.hello()[/code]. Replace the registration code with your own API.
+	</Description>
+	<WorkshopHandle>0</WorkshopHandle>
+	<Tags>
+		<Tag>Mod</Tag>
+		<Tag>BepInEx</Tag>
+		<Tag>StationeersLaunchPad</Tag>
+	</Tags>
+	<ModID>zedle.stationeers.lua.addontemplate</ModID>
+	<OrderAfter ModID="zedle.stationeers.lua" />
+	<Dependencies>
+		<Mod>
+			<Id>3659911735</Id>
+		</Mod>
+	</Dependencies>
+</ModMetadata>
