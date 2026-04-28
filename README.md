@@ -2,6 +2,10 @@
 
 A minimal **[Stationeers](https://store.steampowered.com/app/544550/Stationeers/)** mod sample that extends **[StationeersLua](https://steamcommunity.com/sharedfiles/filedetails/?id=3659911735)** using the same public hooks as mods like **[ScriptedScreens](https://steamcommunity.com/sharedfiles/filedetails/?id=3666779631)**. It links against `StationeersLua.dll` on your PC.
 
+## Community
+
+[![Discord — Orbital Foundry Mod Team](https://img.shields.io/badge/Discord-Orbital%20Foundry-5865F2?logo=discord&logoColor=white)](https://discord.gg/HxvySSu5G3) [![Ko-fi — support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/G2G61S5ZB5)
+
 ## Requirements
 
 - **Stationeers** installed (used for managed assemblies and LaunchPad paths).
