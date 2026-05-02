@@ -40,7 +40,8 @@ public sealed class StationeersLuaAddonTemplatePlugin : ModBehaviour
             }
 
             ExampleLuaLibraryRegistration.TryRegister();
-            Log.LogInfo("StationeersLua addon template: registered example Lua library.");
+            ExampleMcpRegistration.TryRegister();
+            Log.LogInfo("StationeersLua addon template: registered example Lua library and MCP docs/tools.");
         }
         catch (System.Exception ex)
         {
