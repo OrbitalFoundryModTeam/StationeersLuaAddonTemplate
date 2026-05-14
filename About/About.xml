@@ -5,7 +5,7 @@
 	<Version>0.1.0.0</Version>
 	<Description>
 [h1]StationeersLua Addon Template[/h1]
-[i]Open-source sample LaunchPad mod:[/i] registers extra Lua VM bindings through [b]StationeersLua[/b]’s public [code]LuaLibraryRegistry[/code] API (same extension point as ScriptedScreens). Fork this project to ship your own [code]ic.*[/code] or global Lua helpers in C#.
+[i]Open-source sample LaunchPad mod:[/i] registers extra Lua VM bindings through [b]StationeersLua[/b]’s public LuaLibraryRegistry API (same extension point as ScriptedScreens). Fork this project to ship your own ic.* or global Lua helpers in C#.
 
 [h2]Requirements[/h2]
 [list]
@@ -15,7 +15,7 @@
 [/list]
 
 [h2]Sample Lua[/h2]
-After load, chips can call [code]ic.addon_template.hello()[/code]. Replace the registration code with your own API.
+After load, chips can call ic.addon_template.hello(). Replace the registration code with your own API.
 	</Description>
 	<WorkshopHandle>0</WorkshopHandle>
 	<Tags>
