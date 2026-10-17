@@ -51,6 +51,18 @@ Example on a chip:
 local msg = ic.addon_template.hello()
 ```
 
+## Addon helpers (StationeersLua 1.2)
+
+`ic.addon_template.device_name(id)` in **`ExampleLuaLibraryRegistration.cs`** uses the three public helpers StationeersLua 1.2 adds for addons. See StationeersLua's GUIDE.MD, "Writing your own addon (C#)", for the details.
+
+- **`LuaReference`**: your API in the in-game reference panel (one tab per section), the editor's completions and hover, and the VS Code language server. Use `RegisterSection(...)` in code, or `RegisterLocalizedXml(lang => stream)` for per-language XML files in the format of StationeersLua's `LuaReference_EN.xml`. Registering a section name again replaces it.
+- **`LuaChipDevices.ResolveById(chip, referenceId)`**: a device the way `read_id` reaches it, from the chip's own networks only, or null.
+- **`LuaInstructionBudget.TryCharge(luaContext.State, n)`**: charges an expensive call against the script's instruction budget. It refuses, and charges nothing, when the budget can't cover it, so your function can return `nil` and a reason instead of the chip running out of budget. `Remaining(state)` is -1 where no budget applies (for example in a coroutine the script made itself).
+
+**Threads.** Only the host runs chip Lua, and every call holds the chip's execution lock. Most calls come from the game's tick worker thread, the same thread as IC10 logic, but some come from the Unity main thread (ScriptedScreens' frame callbacks, save hooks). Never call Unity APIs from a Lua function: read game state the way `read_id` does, or from snapshots your mod publishes, and queue writes for the main thread.
+
+These need StationeersLua 1.2 or later.
+
 ## Forking / shipping your own mod
 
 1. Rename the project folder, **`ModName`** / **`RootNamespace`** in the `.csproj`, **`PLUGIN_GUID`** and **`PLUGIN_NAME`** in **`PluginInfo.cs`**, and registration name strings in your Lua library code.

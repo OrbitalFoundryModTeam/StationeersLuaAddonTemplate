@@ -16,7 +16,10 @@ namespace StationeersLuaAddonTemplate;
 /// <see cref="LuaLibraryContext.Chip"/>, <see cref="LuaLibraryContext.State"/>, and
 /// <see cref="LuaLibraryContext.Ic"/>.
 ///
-/// This example exposes <c>ic.addon_template.hello()</c> returning a short string.
+/// This example exposes <c>ic.addon_template.hello()</c> returning a short string, and
+/// <c>ic.addon_template.device_name(id)</c>, which shows the three addon helpers (StationeersLua 1.2):
+/// <see cref="LuaChipDevices"/> (reach only what the chip can), <see cref="LuaInstructionBudget"/> (charge a call's
+/// cost) and <see cref="LuaReference"/> (completions, hover and a reference-panel tab).
 /// Replace the table name, methods, and registry name with your mod's API.
 /// </remarks>
 internal static class ExampleLuaLibraryRegistration
@@ -30,6 +33,7 @@ internal static class ExampleLuaLibraryRegistration
         {
             LuaLibraryRegistry.RegisterLibrary("StationeersLuaAddonTemplate.Example", RegisterExampleBindings);
             LuaLibraryRegistry.RegisterSyntax("StationeersLuaAddonTemplate.Example", RegisterExampleSyntax);
+            RegisterExampleReference();
         }
         catch (Exception ex)
         {
@@ -46,6 +50,26 @@ internal static class ExampleLuaLibraryRegistration
         // Add tokens for your mod's API.
         syntax.Add("addon_template", 0U); // StationeersLua v0.9 will use LuaSyntaxColorIndex.Default
         syntax.Add("hello", 12U); // StationeersLua v0.9 will use LuaSyntaxColorIndex.Function
+        syntax.Add("device_name", LuaSyntaxColorIndex.Function);
+    }
+
+    /// <summary>
+    /// The reference: a tab in the in-game reference panel, plus the editor's completions and hover and the LSP.
+    /// A larger API ships per-language XML instead: <c>LuaReference.RegisterLocalizedXml(lang => ...)</c>.
+    /// </summary>
+    private static void RegisterExampleReference()
+    {
+        LuaReference.RegisterSection("Addon Template", new[]
+        {
+            new LuaReferenceCategory("Examples", new[]
+            {
+                new LuaReferenceEntry("ic.addon_template.hello", "ic.addon_template.hello()",
+                    "Returns the addon's name and version.", "print(ic.addon_template.hello())"),
+                new LuaReferenceEntry("ic.addon_template.device_name", "ic.addon_template.device_name(id)",
+                    "The name of a device this chip can reach, or nil and a reason.",
+                    "local name, why = ic.addon_template.device_name(device_id(0))"),
+            }),
+        });
     }
 
     private static void RegisterExampleBindings(LuaLibraryContext context)
@@ -60,6 +84,30 @@ internal static class ExampleLuaLibraryRegistration
         addonRoot["hello"] = new LuaFunction("hello", (luaContext, ct) =>
         {
             luaContext.GetReturnBuffer(1)[0] = $"{PluginInfo.PLUGIN_NAME} ({PluginInfo.PLUGIN_VERSION})";
+            return new ValueTask<int>(1);
+        });
+
+        // A device by ReferenceId, reached exactly as read_id would, with the call's cost charged to the script.
+        var chip = context.Chip;
+        addonRoot["device_name"] = new LuaFunction("device_name", (luaContext, ct) =>
+        {
+            var result = luaContext.GetReturnBuffer(2);
+            if (!LuaInstructionBudget.TryCharge(luaContext.State, 50))
+            {
+                result[0] = LuaValue.Nil;
+                result[1] = "call limit"; // refused before the budget ran out: nothing was charged
+                return new ValueTask<int>(2);
+            }
+
+            var device = LuaChipDevices.ResolveDeviceById(chip, (long)luaContext.GetArgument<double>(0));
+            if (device == null)
+            {
+                result[0] = LuaValue.Nil;
+                result[1] = "not reachable from this chip";
+                return new ValueTask<int>(2);
+            }
+
+            result[0] = device.DisplayName;
             return new ValueTask<int>(1);
         });
 
