@@ -42,18 +42,20 @@ Launch the game with **StationeersLua** enabled. **`About/About.xml`** uses Laun
 
 ## What this sample adds
 
-- **`ic.addon_template.hello()`** returning a short string from **`ExampleLuaLibraryRegistration.cs`**.
+- **`addon_template.hello()`** returning a short string from **`ExampleLuaLibraryRegistration.cs`**.
 - Optional syntax tokens for the chip editor highlighter (same pattern as full mods).
+
+The API is a global table of the mod's own, from `context.GetOrCreateGlobalTable("addon_template")`, the way ScriptedScreens has `ss`. Rename it after your mod. The `ic` table belongs to StationeersLua: a library that adds keys to it gets a warning in the log, and a later StationeersLua may refuse it.
 
 Example on a chip:
 
 ```lua
-local msg = ic.addon_template.hello()
+local msg = addon_template.hello()
 ```
 
 ## Addon helpers (StationeersLua 1.2)
 
-`ic.addon_template.device_name(id)` in **`ExampleLuaLibraryRegistration.cs`** uses the three public helpers StationeersLua 1.2 adds for addons. See StationeersLua's GUIDE.MD, "Writing your own addon (C#)", for the details.
+`addon_template.device_name(id)` in **`ExampleLuaLibraryRegistration.cs`** uses the three public helpers StationeersLua 1.2 adds for addons. See StationeersLua's GUIDE.MD, "Writing your own addon (C#)", for the details.
 
 - **`LuaReference`**: your API in the in-game reference panel (one tab per section), the editor's completions and hover, and the VS Code language server. Use `RegisterSection(...)` in code, or `RegisterLocalizedXml(lang => stream)` for per-language XML files in the format of StationeersLua's `LuaReference_EN.xml`. Registering a section name again replaces it.
 - **`LuaChipDevices.ResolveById(chip, referenceId)`**: a device the way `read_id` reaches it, from the chip's own networks only, or null.

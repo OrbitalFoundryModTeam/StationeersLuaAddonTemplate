@@ -13,11 +13,11 @@ namespace StationeersLuaAddonTemplate;
 /// <remarks>
 /// Registration runs once at mod load. StationeersLua applies all registered callbacks
 /// whenever a chip VM is prepared, passing <see cref="LuaLibraryContext"/> with
-/// <see cref="LuaLibraryContext.Chip"/>, <see cref="LuaLibraryContext.State"/>, and
-/// <see cref="LuaLibraryContext.Ic"/>.
+/// <see cref="LuaLibraryContext.Chip"/> and <see cref="LuaLibraryContext.State"/>.
 ///
-/// This example exposes <c>ic.addon_template.hello()</c> returning a short string, and
-/// <c>ic.addon_template.device_name(id)</c>, which shows the three addon helpers (StationeersLua 1.2):
+/// The API lives in a global table of the mod's own, like ScriptedScreens' <c>ss</c>: the <c>ic</c> table belongs to
+/// StationeersLua (a library that adds to it is named in a warning in the log). This example exposes
+/// <c>addon_template.hello()</c> returning a short string, and <c>addon_template.device_name(id)</c>, which shows the three addon helpers (StationeersLua 1.2):
 /// <see cref="LuaChipDevices"/> (reach only what the chip can), <see cref="LuaInstructionBudget"/> (charge a call's
 /// cost) and <see cref="LuaReference"/> (completions, hover and a reference-panel tab).
 /// Replace the table name, methods, and registry name with your mod's API.
@@ -63,22 +63,19 @@ internal static class ExampleLuaLibraryRegistration
         {
             new LuaReferenceCategory("Examples", new[]
             {
-                new LuaReferenceEntry("ic.addon_template.hello", "ic.addon_template.hello()",
-                    "Returns the addon's name and version.", "print(ic.addon_template.hello())"),
-                new LuaReferenceEntry("ic.addon_template.device_name", "ic.addon_template.device_name(id)",
+                new LuaReferenceEntry("addon_template.hello", "addon_template.hello()",
+                    "Returns the addon's name and version.", "print(addon_template.hello())"),
+                new LuaReferenceEntry("addon_template.device_name", "addon_template.device_name(id)",
                     "The name of a device this chip can reach, or nil and a reason.",
-                    "local name, why = ic.addon_template.device_name(device_id(0))"),
+                    "local name, why = addon_template.device_name(device_id(0))"),
             }),
         });
     }
 
     private static void RegisterExampleBindings(LuaLibraryContext context)
     {
-        if (context.Ic == null)
-            return;
-
-        // Create a sub-table for your mod's API.
-        var addonRoot = LuaBindingHelpers.GetOrCreateSubTable(context.Ic, "addon_template");
+        // Your mod's own global table (created on first use). Name it after your mod; never add to ic.
+        var addonRoot = context.GetOrCreateGlobalTable("addon_template");
 
         // Create a function for your mod's API.
         addonRoot["hello"] = new LuaFunction("hello", (luaContext, ct) =>
@@ -110,9 +107,5 @@ internal static class ExampleLuaLibraryRegistration
             result[0] = device.DisplayName;
             return new ValueTask<int>(1);
         });
-
-        // Example of a global table (like ScriptedScreens' <c>ss</c>) if you prefer top-level names:
-        // var env = context.State.Environment;
-        // if (!env["myglobal"].TryRead<LuaTable>(out var g) || g == null) { g = new LuaTable(); env["myglobal"] = g; }
     }
 }
